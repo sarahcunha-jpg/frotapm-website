@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreamento em Tempo Real - PM Blumenau</title>
+    
+    <!-- Leaflet Map Library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet Marker Cluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.0/dist/leaflet.markercluster.js"></script>
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CSS Customizado -->
+    <link rel="stylesheet" href="css/rastreamento.css">
+</head>
+<body>
+    <div class="container-rastreamento">
+        <!-- Header -->
+        <header class="header-rastreamento">
+            <div class="logo-section">
+                <h1><i class="fas fa-map-location-dot"></i> Rastreamento em Tempo Real</h1>
+                <p>PM Blumenau - Frota de Viaturas</p>
+            </div>
+            <div class="status-conexao">
+                <span class="indicator online"></span>
+                <span id="status-texto">Conectado</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Painel Lateral (Filtros e Informações) -->
+            <aside class="painel-lateral">
+                <div class="painel-header">
+                    <h2><i class="fas fa-sliders"></i> Filtros</h2>
+                </div>
+
+                <!-- Filtro de Unidade -->
+                <div class="filtro-group">
+                    <label for="filtro-unidade">
+                        <i class="fas fa-sitemap"></i> Unidade
+                    </label>
+                    <select id="filtro-unidade">
+                        <option value="">Todas as Unidades</option>
+                        <option value="1º Batalhão">1º Batalhão</option>
+                        <option value="2º Batalhão">2º Batalhão</option>
+                        <option value="3º Batalhão">3º Batalhão</option>
+                        <option value="Comando">Comando</option>
+                    </select>
+                </div>
+
+                <!-- Filtro de Status -->
+                <div class="filtro-group">
+                    <label for="filtro-status">
+                        <i class="fas fa-circle-notch"></i> Status
+                    </label>
+                    <select id="filtro-status">
+                        <option value="">Todos os Status</option>
+                        <option value="operacao">Em Operação</option>
+                        <option value="manutencao">Em Manutenção</option>
+                        <option value="parada">Parada</option>
+                    </select>
+                </div>
+
+                <!-- Busca por Placa -->
+                <div class="filtro-group">
+                    <label for="busca-placa">
+                        <i class="fas fa-search"></i> Buscar Placa
+                    </label>
+                    <input type="text" id="busca-placa" placeholder="Ex: PM-0001">
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="filtro-group botoes-acao">
+                    <button id="btn-atualizar" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    <button id="btn-limpar" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Limpar
+                    </button>
+                </div>
+
+                <!-- Informações Rápidas -->
+                <div class="info-rapida">
+                    <h3><i class="fas fa-info-circle"></i> Resumo da Frota</h3>
+                    <div class="info-item">
+                        <label>Viaturas Visíveis:</label>
+                        <span id="total-viaturas" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Em Operação:</label>
+                        <span id="viaturas-operacao" class="value status-operacao">0</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Em Manutenção:</label>
+                        <span id="viaturas-manutencao" class="value status-manutencao">0</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Paradas:</label>
+                        <span id="viaturas-parada" class="value status-parada">0</span>
+                    </div>
+                </div>
+
+                <!-- Legenda -->
+                <div class="legenda">
+                    <h3><i class="fas fa-legend"></i> Legenda</h3>
+                    <div class="legenda-item">
+                        <span class="legenda-icon operacao"></span>
+                        <span>Em Operação</span>
+                    </div>
+                    <div class="legenda-item">
+                        <span class="legenda-icon manutencao"></span>
+                        <span>Em Manutenção</span>
+                    </div>
+                    <div class="legenda-item">
+                        <span class="legenda-icon parada"></span>
+                        <span>Parada</span>
+                    </div>
+                </div>
+
+                <!-- Viaturas Selecionadas -->
+                <div class="viaturas-lista">
+                    <h3><i class="fas fa-list"></i> Viaturas</h3>
+                    <div id="lista-viaturas" class="viaturas-scroll"></div>
+                </div>
+            </aside>
+
+            <!-- Mapa -->
+            <div class="mapa-container">
+                <div id="mapa" class="mapa"></div>
+
+                <!-- Controles do Mapa -->
+                <div class="controles-mapa">
+                    <button id="btn-centralizar" class="btn-mapa" title="Centralizar no mapa">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                    <button id="btn-fullscreen" class="btn-mapa" title="Tela cheia">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+
+                <!-- Info Box (Informações da Viatura Selecionada) -->
+                <div id="info-box" class="info-box hidden">
+                    <button id="btn-fechar-info" class="btn-fechar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="info-viatura">
+                        <h4 id="info-placa"></h4>
+                        <div class="info-detalhe">
+                            <span class="label">Modelo:</span>
+                            <span id="info-modelo"></span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Unidade:</span>
+                            <span id="info-unidade"></span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Status:</span>
+                            <span id="info-status"></span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Velocidade:</span>
+                            <span id="info-velocidade">0 km/h</span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Quilometragem:</span>
+                            <span id="info-km">0 km</span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Última Atualização:</span>
+                            <span id="info-ultima-atualizacao">-</span>
+                        </div>
+                        <div class="info-detalhe">
+                            <span class="label">Localização:</span>
+                            <span id="info-localizacao">-</span>
+                        </div>
+                        <button id="btn-historico" class="btn btn-info">
+                            <i class="fas fa-history"></i> Ver Histórico de Rotas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Histórico de Rotas -->
+    <div id="modal-historico" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Histórico de Rotas - <span id="modal-placa"></span></h2>
+                <button class="btn-fechar" onclick="fecharModalHistorico()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <canvas id="canvas-historico"></canvas>
+                <div id="tabela-historico" class="tabela-rotas"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/dados-viaturas.js"></script>
+    <script src="js/rastreamento.js"></script>
+</body>
+</html>
