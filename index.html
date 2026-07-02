@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sistema-frota.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -61,7 +62,7 @@
                     <div class="card stat-card">
                         <div class="card-body">
                             <h6 class="card-title">Total de Viaturas</h6>
-                            <h3 id="total-viaturas">12</h3>
+                            <h3 id="totalViaturas">12</h3>
                             <p class="text-muted">Cadastradas no sistema</p>
                         </div>
                     </div>
@@ -69,18 +70,18 @@
                 <div class="col-md-3 mb-3">
                     <div class="card stat-card">
                         <div class="card-body">
-                            <h6 class="card-title">Em Operação</h6>
-                            <h3 id="em-operacao" style="color: #28a745;">9</h3>
-                            <p class="text-muted">Disponíveis para uso</p>
+                            <h6 class="card-title">Total de OS</h6>
+                            <h3 id="totalOS" style="color: #ffc107;">0</h3>
+                            <p class="text-muted">Ordens de Serviço</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card stat-card">
                         <div class="card-body">
-                            <h6 class="card-title">Em Manutenção</h6>
-                            <h3 id="em-manutencao" style="color: #ffc107;">2</h3>
-                            <p class="text-muted">Aguardando serviço</p>
+                            <h6 class="card-title">Custo Total</h6>
+                            <h3 id="custoTotal" style="color: #dc3545;">R$ 0,00</h3>
+                            <p class="text-muted">Manutenções</p>
                         </div>
                     </div>
                 </div>
@@ -110,19 +111,6 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0">Manutenções por Mês</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="chartManutencoes"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
                             <h5 class="mb-0">Custos de Manutenção</h5>
                         </div>
                         <div class="card-body">
@@ -130,7 +118,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="mb-0">Falhas Mais Recorrentes</h5>
@@ -218,14 +209,16 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Item</th>
-                                        <th>Frequência</th>
-                                        <th>Última Execução</th>
+                                        <th>ID</th>
+                                        <th>Viatura</th>
+                                        <th>Tipo</th>
+                                        <th>Frequência (km)</th>
                                         <th>Próxima Execução</th>
                                         <th>Status</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableManutencaoPreventiva">
+                                <tbody id="corpoTabelaManutenção">
                                     <!-- Populated by JS -->
                                 </tbody>
                             </table>
@@ -244,17 +237,17 @@
                     <table class="table table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>OS #</th>
+                                <th>ID</th>
                                 <th>Viatura</th>
+                                <th>Tipo</th>
                                 <th>Data</th>
-                                <th>Problema</th>
-                                <th>Responsável</th>
                                 <th>Custo</th>
                                 <th>Status</th>
+                                <th>Tempo Parada</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tableOS">
+                        <tbody id="corpoTabelaOS">
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
@@ -308,14 +301,12 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label for="selectRelatorio" class="form-label">Tipo de Relatório:</label>
-                                <select class="form-select" id="selectRelatorio">
-                                    <option value="">Selecione...</option>
-                                    <option value="viaturas-manutencao">Viaturas em Manutenção</option>
-                                    <option value="custos-mensais">Custos Mensais</option>
-                                    <option value="manutencoes-vencidas">Manutenções Vencidas</option>
-                                    <option value="disponibilidade">Disponibilidade da Frota</option>
-                                    <option value="indicadores">Indicadores de Desempenho</option>
+                                <label for="tipoRelatorio" class="form-label">Tipo de Relatório:</label>
+                                <select class="form-select" id="tipoRelatorio">
+                                    <option value="completo">Relatório Completo</option>
+                                    <option value="os">Ordens de Serviço</option>
+                                    <option value="preventiva">Manutenção Preventiva</option>
+                                    <option value="custos">Análise de Custos</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -326,10 +317,10 @@
                                 <label for="dataFim" class="form-label">Data Fim:</label>
                                 <input type="date" class="form-control" id="dataFim">
                             </div>
-                            <button class="btn btn-primary w-100 mb-2">
+                            <button class="btn btn-primary w-100 mb-2" onclick="gerarPDF()">
                                 <i class="fas fa-file-pdf"></i> Gerar PDF
                             </button>
-                            <button class="btn btn-success w-100">
+                            <button class="btn btn-success w-100" onclick="gerarExcel()">
                                 <i class="fas fa-file-excel"></i> Gerar Excel
                             </button>
                         </div>
@@ -342,25 +333,149 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label>Disponibilidade da Frota</label>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" id="kpiDisponibilidade" style="width: 75%">75%</div>
+                                <label>MTTR - Tempo Médio de Reparo</label>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p id="mttr-valor" class="text-primary"><strong>0 dias</strong></p>
+                                    <span id="mttr-variacao" class="kpi-variacao">0%</span>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label>MTTR (Tempo Médio de Reparo)</label>
-                                <p id="kpiMTTR" class="text-primary"><strong>4.5 horas</strong></p>
+                                <label>MTBF - Tempo Médio Entre Falhas</label>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p id="mtbf-valor" class="text-primary"><strong>0 dias</strong></p>
+                                    <span id="mtbf-variacao" class="kpi-variacao">0%</span>
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label>MTBF (Tempo Médio Entre Falhas)</label>
-                                <p id="kpiMTBF" class="text-primary"><strong>450 horas</strong></p>
+                                <label>Disponibilidade</label>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p id="disponibilidade-valor" class="text-primary"><strong>0%</strong></p>
+                                    <span id="disponibilidade-variacao" class="kpi-variacao">0%</span>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label>Custo por Viatura</label>
-                                <p id="kpiCusto" class="text-primary"><strong>R$ 2.350,00</strong></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p id="custo-viatura-valor" class="text-primary"><strong>R$ 0,00</strong></p>
+                                    <span id="custo-viatura-variacao" class="kpi-variacao">0%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR OS -->
+    <div class="modal fade" id="modalEditarOS" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Ordem de Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarOS">
+                        <input type="hidden" id="edit-os-id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Viatura</label>
+                            <input type="text" class="form-control" id="edit-viatura" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Manutenção</label>
+                            <select class="form-select" id="edit-tipo" required>
+                                <option value="Preventiva">Preventiva</option>
+                                <option value="Corretiva">Corretiva</option>
+                                <option value="Emergencial">Emergencial</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Data da Manutenção</label>
+                            <input type="date" class="form-control" id="edit-data" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Descrição do Problema</label>
+                            <textarea class="form-control" id="edit-descricao" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Custo (R$)</label>
+                            <input type="number" class="form-control" id="edit-custo" step="0.01" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="edit-status" required>
+                                <option value="Aberta">Aberta</option>
+                                <option value="Em Progresso">Em Progresso</option>
+                                <option value="Concluída">Concluída</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tempo de Parada (dias)</label>
+                            <input type="number" class="form-control" id="edit-tempo-parada" step="0.5" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarOS').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR MANUTENÇÃO PREVENTIVA -->
+    <div class="modal fade" id="modalEditarPreventiva" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Manutenção Preventiva</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarPreventiva">
+                        <input type="hidden" id="edit-preventiva-id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Viatura</label>
+                            <input type="text" class="form-control" id="edit-prev-viatura" disabled>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Manutenção</label>
+                            <input type="text" class="form-control" id="edit-prev-tipo" disabled>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Frequência (km)</label>
+                            <input type="number" class="form-control" id="edit-prev-frequencia" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Próxima Execução</label>
+                            <input type="date" class="form-control" id="edit-prev-proxima" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="edit-prev-status" required>
+                                <option value="Pendente">Pendente</option>
+                                <option value="Em Execução">Em Execução</option>
+                                <option value="Concluído">Concluído</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarPreventiva').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -461,8 +576,16 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts da Aplicação (Fases 1-4) -->
+    <script src="js/script-fase1.js"></script>
+    <script src="js/script-fase2.js"></script>
+    <script src="js/script-fase3.js"></script>
+    <script src="js/script-fase4.js"></script>
+    
+    <!-- Scripts Originais -->
     <script src="js/dados.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/viaturas.js"></script>
