@@ -1,0 +1,49 @@
+<!-- MODAL: EDITAR MANUTENÇÃO PREVENTIVA -->
+<div class="modal fade" id="modalEditarPreventiva" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Manutenção Preventiva</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditarPreventiva">
+          <input type="hidden" id="edit-preventiva-id">
+          
+          <div class="mb-3">
+            <label class="form-label">Viatura</label>
+            <input type="text" class="form-control" id="edit-prev-viatura" disabled>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Tipo de Manutenção</label>
+            <input type="text" class="form-control" id="edit-prev-tipo" disabled>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Frequência (km)</label>
+            <input type="number" class="form-control" id="edit-prev-frequencia" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Próxima Execução</label>
+            <input type="date" class="form-control" id="edit-prev-proxima" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="edit-prev-status" required>
+              <option value="Pendente">Pendente</option>
+              <option value="Em Execução">Em Execução</option>
+              <option value="Concluído">Concluído</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarPreventiva').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>

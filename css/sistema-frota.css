@@ -1,0 +1,191 @@
+/* ============================================
+   ESTILOS SISTEMA DE GESTÃO DE FROTA
+   ============================================ */
+
+:root {
+  --primary-color: #007bff;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --dark-color: #343a40;
+  --light-color: #f8f9fa;
+  --border-radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Editar OS */
+#modalEditarOS {
+  z-index: 9999 !important;
+}
+
+/* Modal Editar Preventiva */
+#modalEditarPreventiva {
+  z-index: 9999 !important;
+}
+
+/* Tabelas com Ações */
+.table td:last-child {
+  white-space: nowrap;
+}
+
+.btn-icon {
+  padding: 4px 8px !important;
+  font-size: 14px;
+  margin: 0 2px;
+}
+
+/* Status Badges */
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.badge-aberta, .badge-em-progresso, .badge-em_progresso {
+  background-color: #007bff;
+}
+
+.badge-concluída, .badge-concluido {
+  background-color: #28a745;
+}
+
+.badge-pendente {
+  background-color: #95a5a6;
+}
+
+/* KPI Cards */
+.kpi-card {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-valor {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 10px 0;
+}
+
+/* Variação de KPI */
+.kpi-variacao {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.kpi-variacao.positivo {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.kpi-variacao.negativo {
+  background: #fadbd8;
+  color: #c0392b;
+}
+
+/* Sparklines */
+.sparkline {
+  height: 60px !important;
+}
+
+/* Tabelas dinâmicas */
+.table thead {
+  background-color: var(--dark-color);
+  color: white;
+}
+
+.table tbody tr:hover {
+  background-color: var(--light-color);
+}
+
+/* Botões de Ação */
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+/* Cards de Gráficos */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: var(--light-color);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 15px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kpi-card {
+    margin-bottom: 15px;
+  }
+  
+  .table {
+    font-size: 12px;
+  }
+  
+  .btn-sm {
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table tbody tr {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  .btn,
+  .navbar,
+  .modal {
+    display: none !important;
+  }
+  
+  .table {
+    border-collapse: collapse;
+  }
+  
+  .table thead {
+    background-color: #f5f5f5 !important;
+  }
+}

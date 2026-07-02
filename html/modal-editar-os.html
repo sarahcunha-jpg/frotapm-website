@@ -1,0 +1,63 @@
+<!-- MODAL: EDITAR OS -->
+<div class="modal fade" id="modalEditarOS" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Ordem de Serviço</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditarOS">
+          <input type="hidden" id="edit-os-id">
+          
+          <div class="mb-3">
+            <label class="form-label">Viatura</label>
+            <input type="text" class="form-control" id="edit-viatura" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Tipo de Manutenção</label>
+            <select class="form-select" id="edit-tipo" required>
+              <option value="Preventiva">Preventiva</option>
+              <option value="Corretiva">Corretiva</option>
+              <option value="Emergencial">Emergencial</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Data da Manutenção</label>
+            <input type="date" class="form-control" id="edit-data" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Descrição do Problema</label>
+            <textarea class="form-control" id="edit-descricao" rows="3"></textarea>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Custo (R$)</label>
+            <input type="number" class="form-control" id="edit-custo" step="0.01" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="edit-status" required>
+              <option value="Aberta">Aberta</option>
+              <option value="Em Progresso">Em Progresso</option>
+              <option value="Concluída">Concluída</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Tempo de Parada (dias)</label>
+            <input type="number" class="form-control" id="edit-tempo-parada" step="0.5" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarOS').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
