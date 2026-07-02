@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrotaPM - Sistema de Gestão de Frota | PM Blumenau</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-car"></i> FrotaPM
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#viaturas">Viaturas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#manutencao">Manutenção</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#rastreamento">Rastreamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#relatorios">Relatórios</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <h1 class="mb-4"><i class="fas fa-chart-line"></i> Dashboard</h1>
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <h6 class="card-title">Total de Viaturas</h6>
+                            <h3 id="total-viaturas">12</h3>
+                            <p class="text-muted">Cadastradas no sistema</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <h6 class="card-title">Em Operação</h6>
+                            <h3 id="em-operacao" style="color: #28a745;">9</h3>
+                            <p class="text-muted">Disponíveis para uso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <h6 class="card-title">Em Manutenção</h6>
+                            <h3 id="em-manutencao" style="color: #ffc107;">2</h3>
+                            <p class="text-muted">Aguardando serviço</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <h6 class="card-title">Indisponíveis</h6>
+                            <h3 id="indisponiveis" style="color: #dc3545;">1</h3>
+                            <p class="text-muted">Fora de serviço</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Disponibilidade da Frota (%)</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chartDisponibilidade"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Manutenções por Mês</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chartManutencoes"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Custos de Manutenção</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chartCustos"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Falhas Mais Recorrentes</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chartFalhas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Alertas de Manutenção</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Vencida:</strong> PM-0003 - Revisão geral vencida há 10 dias
+                    </div>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Próxima do vencimento:</strong> PM-0007 - Troca de óleo em 500 km
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Próximas revisões:</strong> 5 viaturas com revisão prevista para os próximos 30 dias
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Viaturas Tab -->
+        <div id="viaturas" class="tab-content" style="display:none;">
+            <h1 class="mb-4"><i class="fas fa-truck"></i> Cadastro de Viaturas</h1>
+            
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalViatura">
+                <i class="fas fa-plus"></i> Nova Viatura
+            </button>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Ano</th>
+                            <th>Quilometragem</th>
+                            <th>Unidade</th>
+                            <th>Status</th>
+                            <th>Última Revisão</th>
+                            <th>Próxima Revisão</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableViaturas">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Manutenção Tab -->
+        <div id="manutencao" class="tab-content" style="display:none;">
+            <h1 class="mb-4"><i class="fas fa-wrench"></i> Plano de Manutenção</h1>
+            
+            <ul class="nav nav-tabs mb-3" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="preventiva-tab" data-bs-toggle="tab" data-bs-target="#preventiva">Preventiva</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="os-tab" data-bs-toggle="tab" data-bs-target="#os">Ordens de Serviço</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="historico-tab" data-bs-toggle="tab" data-bs-target="#historico">Histórico</button>
+                </li>
+            </ul>
+
+            <!-- Preventiva Tab Content -->
+            <div class="tab-pane fade show active" id="preventiva" role="tabpanel">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Plano de Manutenção Preventiva</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Frequência</th>
+                                        <th>Última Execução</th>
+                                        <th>Próxima Execução</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableManutencaoPreventiva">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ordens de Serviço Tab Content -->
+            <div class="tab-pane fade" id="os" role="tabpanel">
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalOS">
+                    <i class="fas fa-plus"></i> Nova Ordem de Serviço
+                </button>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>OS #</th>
+                                <th>Viatura</th>
+                                <th>Data</th>
+                                <th>Problema</th>
+                                <th>Responsável</th>
+                                <th>Custo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableOS">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Histórico Tab Content -->
+            <div class="tab-pane fade" id="historico" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Histórico de Manutenção por Viatura</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Viatura</th>
+                                        <th>Serviço</th>
+                                        <th>Data</th>
+                                        <th>Custo</th>
+                                        <th>Peças</th>
+                                        <th>Tempo Parada</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableHistorico">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rastreamento Tab -->
+        <div id="rastreamento" class="tab-content" style="display:none;">
+            <h1 class="mb-4"><i class="fas fa-map-location-dot"></i> Rastreamento em Tempo Real</h1>
+            <iframe src="rastreamento/rastreamento.html" style="width: 100%; height: 800px; border: none; border-radius: 8px;"></iframe>
+        </div>
+
+        <!-- Relatórios Tab -->
+        <div id="relatorios" class="tab-content" style="display:none;">
+            <h1 class="mb-4"><i class="fas fa-file-pdf"></i> Relatórios</h1>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Gerar Relatórios</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="selectRelatorio" class="form-label">Tipo de Relatório:</label>
+                                <select class="form-select" id="selectRelatorio">
+                                    <option value="">Selecione...</option>
+                                    <option value="viaturas-manutencao">Viaturas em Manutenção</option>
+                                    <option value="custos-mensais">Custos Mensais</option>
+                                    <option value="manutencoes-vencidas">Manutenções Vencidas</option>
+                                    <option value="disponibilidade">Disponibilidade da Frota</option>
+                                    <option value="indicadores">Indicadores de Desempenho</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dataInicio" class="form-label">Data Início:</label>
+                                <input type="date" class="form-control" id="dataInicio">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dataFim" class="form-label">Data Fim:</label>
+                                <input type="date" class="form-control" id="dataFim">
+                            </div>
+                            <button class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-file-pdf"></i> Gerar PDF
+                            </button>
+                            <button class="btn btn-success w-100">
+                                <i class="fas fa-file-excel"></i> Gerar Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>KPIs - Indicadores de Desempenho</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label>Disponibilidade da Frota</label>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" id="kpiDisponibilidade" style="width: 75%">75%</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label>MTTR (Tempo Médio de Reparo)</label>
+                                <p id="kpiMTTR" class="text-primary"><strong>4.5 horas</strong></p>
+                            </div>
+                            <div class="mb-3">
+                                <label>MTBF (Tempo Médio Entre Falhas)</label>
+                                <p id="kpiMTBF" class="text-primary"><strong>450 horas</strong></p>
+                            </div>
+                            <div class="mb-3">
+                                <label>Custo por Viatura</label>
+                                <p id="kpiCusto" class="text-primary"><strong>R$ 2.350,00</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova Viatura -->
+    <div class="modal fade" id="modalViatura" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastro de Viatura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formViatura">
+                        <div class="mb-3">
+                            <label class="form-label">Placa</label>
+                            <input type="text" class="form-control" name="placa" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" class="form-control" name="modelo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ano</label>
+                            <input type="number" class="form-control" name="ano" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quilometragem</label>
+                            <input type="number" class="form-control" name="quilometragem" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unidade</label>
+                            <select class="form-select" name="unidade" required>
+                                <option value="1º Batalhão">1º Batalhão</option>
+                                <option value="2º Batalhão">2º Batalhão</option>
+                                <option value="3º Batalhão">3º Batalhão</option>
+                                <option value="Comando">Comando</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status" required>
+                                <option value="operacao">Em Operação</option>
+                                <option value="manutencao">Em Manutenção</option>
+                                <option value="indisponivel">Indisponível</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarViatura()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova OS -->
+    <div class="modal fade" id="modalOS" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Ordem de Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formOS">
+                        <div class="mb-3">
+                            <label class="form-label">Viatura</label>
+                            <select class="form-select" name="viatura" required>
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Problema Identificado</label>
+                            <textarea class="form-control" name="problema" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Responsável</label>
+                            <input type="text" class="form-control" name="responsavel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Peças Utilizadas</label>
+                            <textarea class="form-control" name="pecas" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Custo (R$)</label>
+                            <input type="number" class="form-control" name="custo" step="0.01" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarOS()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dados.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/viaturas.js"></script>
+    <script src="js/manutencao.js"></script>
+</body>
+</html>
