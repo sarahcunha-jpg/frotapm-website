@@ -3,7 +3,46 @@ function onReady(fn) { if (document.readyState === 'loading') document.addEventL
 
 onReady(function() {
     carregarTableViaturas();
+
+    // ligar formulário de viatura
+    const form = document.getElementById('formViatura');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // validação básica
+            const placa = form.querySelector('[name="placa"]').value.trim();
+            const modelo = form.querySelector('[name="modelo"]').value.trim();
+            if (!placa) return alert('A placa é obrigatória.');
+            if (!modelo) return alert('O modelo é obrigatório.');
+            salvarViatura();
+            atualizarDashboardAfterDataChange();
+        });
+    }
+
+    // busca
+    const search = document.getElementById('searchViaturas');
+    if (search) {
+        search.addEventListener('input', function() {
+            const q = this.value.trim().toLowerCase();
+            if (typeof buscarViaturasFirebase === 'function' && window.db) {
+                const filtered = buscarViaturasFirebase(q);
+                carregarTableViaturasComLista(filtered);
+            } else {
+                const filtered = viaturas.filter(v => 
+                    (v.placa||'').toLowerCase().includes(q) ||
+                    (v.modelo||'').toLowerCase().includes(q) ||
+                    (String(v.placa)||'').toLowerCase().startsWith(q)
+                );
+                carregarTableViaturasComLista(filtered);
+            }
+        });
+    }
 });
+
+// Compat with firebase-config.js which may call carregarViaturas()
+function carregarViaturas() {
+    carregarTableViaturas();
+}
 
 // Carregar tabela de viaturas
 function carregarTableViaturas() {
@@ -14,9 +53,9 @@ function carregarTableViaturas() {
         <tr>
             <td><strong>${viatura.placa}</strong></td>
             <td>${viatura.modelo}</td>
-            <td>${viatura.ano}</td>
-            <td>${viatura.quilometragem.toLocaleString('pt-BR')} km</td>
-            <td>${viatura.unidade}</td>
+            <td>${viatura.ano || ''}</td>
+            <td>${(viatura.quilometragem||0).toLocaleString('pt-BR')} km</td>
+            <td>${viatura.unidade || ''}</td>
             <td>
                 <span class="badge ${obterCorStatus(viatura.status)}">
                     ${obterLabelStatus(viatura.status)}
@@ -25,10 +64,10 @@ function carregarTableViaturas() {
             <td>${formatarData(viatura.ultimaRevisao)}</td>
             <td>${formatarData(viatura.proximaRevisao)}</td>
             <td>
-                <button class="btn btn-sm btn-info" onclick="editarViatura(${viatura.id})">
+                <button class="btn btn-sm btn-info" onclick="editarViatura('${viatura.id}')">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-danger" onclick="deletarViatura(${viatura.id})">
+                <button class="btn btn-sm btn-danger" onclick="deletarViatura('${viatura.id}')">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
@@ -37,6 +76,35 @@ function carregarTableViaturas() {
 
     // Atualiza selects que dependem da lista de viaturas
     atualizarSelectViaturas();
+}
+
+function carregarTableViaturasComLista(lista) {
+    const tableBody = document.getElementById('tableViaturas');
+    if (!tableBody) return;
+    tableBody.innerHTML = lista.map(viatura => `
+        <tr>
+            <td><strong>${viatura.placa}</strong></td>
+            <td>${viatura.modelo}</td>
+            <td>${viatura.ano || ''}</td>
+            <td>${(viatura.quilometragem||0).toLocaleString('pt-BR')} km</td>
+            <td>${viatura.unidade || ''}</td>
+            <td>
+                <span class="badge ${obterCorStatus(viatura.status)}">
+                    ${obterLabelStatus(viatura.status)}
+                </span>
+            </td>
+            <td>${formatarData(viatura.ultimaRevisao)}</td>
+            <td>${formatarData(viatura.proximaRevisao)}</td>
+            <td>
+                <button class="btn btn-sm btn-info" onclick="editarViatura('${viatura.id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deletarViatura('${viatura.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
 }
 
 function obterCorStatus(status) {
@@ -66,31 +134,43 @@ function formatarData(data) {
 
 function getNextViaturaId() {
     if (!viaturas || viaturas.length === 0) return 1;
-    return Math.max(...viaturas.map(v => v.id)) + 1;
+    // if ids are strings (Firestore) cannot compute numeric next; fallback to length+1
+    const numericIds = viaturas.map(v => typeof v.id === 'number' ? v.id : null).filter(Boolean);
+    if (numericIds.length === 0) return viaturas.length + 1;
+    return Math.max(...numericIds) + 1;
 }
 
-function salvarViatura() {
+async function salvarViatura() {
     const form = document.getElementById('formViatura');
     const formData = new FormData(form);
     const modalEl = document.getElementById('modalViatura');
-    const editId = modalEl.dataset.editId ? Number(modalEl.dataset.editId) : null;
+    const editId = modalEl.dataset.editId ? modalEl.dataset.editId : null;
 
     if (editId) {
         // Editar viatura existente
-        const vi = viaturas.find(v => v.id === editId);
+        const vi = viaturas.find(v => String(v.id) === String(editId));
         if (!vi) return alert('Viatura não encontrada para edição');
 
-        vi.placa = formData.get('placa');
-        vi.modelo = formData.get('modelo');
-        vi.ano = parseInt(formData.get('ano')) || vi.ano;
-        vi.quilometragem = parseInt(formData.get('quilometragem')) || vi.quilometragem;
-        vi.unidade = formData.get('unidade');
-        vi.status = formData.get('status');
-        // não alteramos revisões aqui
+        const dados = {
+            placa: formData.get('placa'),
+            modelo: formData.get('modelo'),
+            ano: parseInt(formData.get('ano')) || vi.ano,
+            quilometragem: parseInt(formData.get('quilometragem')) || vi.quilometragem,
+            unidade: formData.get('unidade'),
+            status: formData.get('status')
+        };
+
+        if (window.db && typeof atualizarViaturaFirebase === 'function') {
+            await atualizarViaturaFirebase(editId, dados);
+        } else {
+            Object.assign(vi, dados);
+            saveAllData();
+            carregarTableViaturas();
+            alert('Viatura atualizada com sucesso!');
+        }
 
         // limpa flag de edição
         delete modalEl.dataset.editId;
-        alert('Viatura atualizada com sucesso!');
     } else {
         const novaViatura = {
             id: getNextViaturaId(),
@@ -103,20 +183,27 @@ function salvarViatura() {
             ultimaRevisao: new Date().toISOString().split('T')[0],
             proximaRevisao: new Date(Date.now() + 60*24*60*60*1000).toISOString().split('T')[0]
         };
-        viaturas.push(novaViatura);
-        alert('Viatura cadastrada com sucesso!');
+
+        if (window.db && typeof salvarViaturaFirebase === 'function') {
+            await salvarViaturaFirebase(novaViatura);
+            // onSnapshot irá recarregar viaturas automaticamente
+            // fecha modal após salvar
+        } else {
+            viaturas.push(novaViatura);
+            saveAllData();
+            alert('Viatura cadastrada com sucesso!');
+            carregarTableViaturas();
+        }
     }
 
-    saveAllData();
-    carregarTableViaturas();
+    // limpar e fechar modal
     form.reset();
-
-    const modal = bootstrap.Modal.getInstance(modalEl);
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalViatura'));
     if (modal) modal.hide();
 }
 
 function editarViatura(id) {
-    const vi = viaturas.find(v => v.id === id);
+    const vi = viaturas.find(v => String(v.id) === String(id));
     if (!vi) return alert('Viatura não encontrada');
 
     const form = document.getElementById('formViatura');
@@ -133,9 +220,13 @@ function editarViatura(id) {
     modal.show();
 }
 
-function deletarViatura(id) {
-    if (confirm('Tem certeza que deseja deletar esta viatura?')) {
-        const index = viaturas.findIndex(v => v.id === id);
+async function deletarViatura(id) {
+    if (!confirm('Tem certeza que deseja deletar esta viatura?')) return;
+    if (window.db && typeof deletarViaturaFirebase === 'function') {
+        await deletarViaturaFirebase(id);
+        // onSnapshot atualizará a lista
+    } else {
+        const index = viaturas.findIndex(v => String(v.id) === String(id));
         if (index > -1) {
             viaturas.splice(index, 1);
             saveAllData();
@@ -150,7 +241,7 @@ function atualizarSelectViaturas() {
     const selectOS = document.querySelector('#formOS select[name="viatura"]');
     if (!selectOS) return;
     const current = selectOS.value;
-    selectOS.innerHTML = '<option value="">Selecione...</option>' + viaturas.map(v => `<option value="${v.placa}">${v.placa} - ${v.modelo}</option>`).join('');
+    selectOS.innerHTML = '<option value="">Selecione...</option>' + viaturas.map(v => `<option value="${v.placa}" data-id="${v.id}">${v.placa} - ${v.modelo}</option>`).join('');
     // tenta restaurar seleção
     if (current) selectOS.value = current;
 }
