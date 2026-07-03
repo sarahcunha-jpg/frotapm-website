@@ -1,3 +1,12 @@
+// Executar ao carregar com onReady helper
+function onReady(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+
+onReady(function() {
+    carregarManutencaoPreventiva();
+    carregarOrdenServico();
+    carregarHistoricoManutencao();
+});
+
 // Carregar dados de manutenção
 function carregarManutencaoPreventiva() {
     const tableBody = document.getElementById('corpoTabelaManutenção') || document.getElementById('tableManutencaoPreventiva');
@@ -132,10 +141,3 @@ function atualizarDashboardAfterDataChange() {
     // tenta chamar a função do dashboard (se existir) para recalcular valores
     if (typeof carregarDadosDashboard === 'function') carregarDadosDashboard();
 }
-
-// Executar ao carregar
-document.addEventListener('DOMContentLoaded', function() {
-    carregarManutencaoPreventiva();
-    carregarOrdenServico();
-    carregarHistoricoManutencao();
-});

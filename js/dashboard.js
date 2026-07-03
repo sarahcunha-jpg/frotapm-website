@@ -1,5 +1,10 @@
-// Inicializar Dashboard
-document.addEventListener('DOMContentLoaded', function() {
+// Inicializar Dashboard com segurança, mesmo que DOMContentLoaded já tenha disparado
+function onReady(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+}
+
+onReady(function() {
     carregarDadosDashboard();
     inicializarGraficos();
     configurarNavegacao();

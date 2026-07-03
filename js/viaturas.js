@@ -1,3 +1,10 @@
+// Executar ao carregar com onReady helper
+function onReady(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+
+onReady(function() {
+    carregarTableViaturas();
+});
+
 // Carregar tabela de viaturas
 function carregarTableViaturas() {
     const tableBody = document.getElementById('tableViaturas');
@@ -147,8 +154,3 @@ function atualizarSelectViaturas() {
     // tenta restaurar seleção
     if (current) selectOS.value = current;
 }
-
-// Executar ao carregar
-document.addEventListener('DOMContentLoaded', function() {
-    carregarTableViaturas();
-});
