@@ -160,6 +160,10 @@
                 <i class="fas fa-plus"></i> Nova Viatura
             </button>
 
+            <div class="mb-3">
+                <input id="searchViaturas" class="form-control" placeholder="Pesquisar por placa, prefixo ou modelo...">
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead class="table-dark">
@@ -381,9 +385,52 @@
         </div>
     </div>
 
+    <!-- Modal para criar OS (adicionado) -->
+    <div class="modal fade" id="modalOS" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Ordem de Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formOS">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Viatura</label>
+                            <select name="viatura" class="form-select">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select name="tipo" class="form-select">
+                                <option value="Preventiva">Preventiva</option>
+                                <option value="Corretiva">Corretiva</option>
+                                <option value="Emergencial">Emergencial</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Custo</label>
+                            <input name="custo" type="number" step="0.01" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrição</label>
+                            <textarea name="descricao" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Criar OS</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts: Bootstrap bundle (includes Popper) then app scripts in correct order -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="js/dados.js"></script>
+    <script src="js/firebase-config.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/viaturas.js"></script>
     <script src="js/manutencao.js"></script>
