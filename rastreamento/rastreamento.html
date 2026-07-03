@@ -13,9 +13,11 @@
 </head>
 <body>
     <div id="map"></div>
-    <div class="info">Mapa de rastreamento - dados de exemplo. Feche esta aba para retornar ao painel.</div>
+    <div class="info">Mapa de rastreamento — marcadores criados a partir dos dados locais.</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Carrega os dados do projeto para usar como fonte de marcadores -->
+    <script src="../js/dados.js"></script>
     <script>
         // Inicializa mapa simples centrado em Blumenau
         var map = L.map('map').setView([-26.9168, -49.0683], 13);
@@ -24,16 +26,20 @@
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        // Marcadores de exemplo a partir dos dados existentes (se disponíveis via parent)
-        var markers = [
-            [-26.9168, -49.0683, 'PM-0001'],
-            [-26.9175, -49.0675, 'PM-0002'],
-            [-26.9200, -49.0700, 'PM-0003']
-        ];
+        // Se a variável viaturas estiver definida, plota marcadores dinâmicos
+        if (typeof viaturas !== 'undefined' && Array.isArray(viaturas)) {
+            viaturas.forEach(function(v) {
+                if (v.latitude && v.longitude) {
+                    L.marker([v.latitude, v.longitude]).addTo(map).bindPopup(`<strong>${v.placa}</strong><br>${v.modelo}`);
+                }
+            });
+        } else {
+            // Fallback marcador
+            L.marker([-26.9168, -49.0683]).addTo(map).bindPopup('Localização padrão');
+        }
 
-        markers.forEach(function(m) {
-            L.marker([m[0], m[1]]).addTo(map).bindPopup(m[2]);
-        });
+        // Se quiser, abrir popup automático
+        // setTimeout(function(){ map.openPopup(); }, 800);
     </script>
 </body>
 </html>

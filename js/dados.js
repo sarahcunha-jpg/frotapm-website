@@ -1,5 +1,5 @@
-// Dados das Viaturas
-const viaturas = [
+// Dados das Viaturas (inicializados, mas podem ser sobrescritos por localStorage)
+let viaturas = [
     {
         id: 1,
         placa: 'PM-0001',
@@ -68,7 +68,7 @@ const viaturas = [
 ];
 
 // Dados de Manutenção Preventiva
-const manutencaoPreventiva = [
+let manutencaoPreventiva = [
     { id: 1, item: 'Troca de óleo', frequencia: '10.000 km', ultimaExecucao: '2024-01-10', proximaExecucao: '2024-03-10' },
     { id: 2, item: 'Revisão dos freios', frequencia: '20.000 km', ultimaExecucao: '2024-01-15', proximaExecucao: '2024-03-15' },
     { id: 3, item: 'Alinhamento e balanceamento', frequencia: '15.000 km', ultimaExecucao: '2024-01-20', proximaExecucao: '2024-03-20' },
@@ -78,7 +78,7 @@ const manutencaoPreventiva = [
 ];
 
 // Dados de Ordens de Serviço
-const ordensServico = [
+let ordensServico = [
     {
         id: 1,
         numero: 'OS-001',
@@ -121,7 +121,7 @@ const ordensServico = [
 ];
 
 // Histórico de Manutenção
-const historicoManutencao = [
+let historicoManutencao = [
     {
         viatura: 'PM-0001',
         servico: 'Troca de óleo',
@@ -149,7 +149,7 @@ const historicoManutencao = [
 ];
 
 // KPIs
-const kpis = {
+let kpis = {
     disponibilidade: 75,
     mttr: 4.5,
     mtbf: 450,
@@ -159,9 +159,52 @@ const kpis = {
 };
 
 // Dados para gráficos
-const dadosGraficos = {
+let dadosGraficos = {
     disponibilidade: [75, 78, 72, 80, 75, 82],
     manutencoesMes: [5, 4, 6, 3, 7, 5],
     custosMes: [1200, 1100, 1500, 900, 1800, 1300],
     falhasRecorrentes: ['Freios', 'Óleo', 'Pneus', 'Elétrica', 'Suspensão']
 };
+
+// LocalStorage helpers
+const STORAGE_KEY = 'frotapm_data_v1';
+
+function saveAllData() {
+    const payload = {
+        viaturas,
+        manutencaoPreventiva,
+        ordensServico,
+        historicoManutencao,
+        kpis,
+        dadosGraficos
+    };
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+        console.warn('Não foi possível salvar em localStorage:', e);
+    }
+}
+
+function loadAllData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (parsed.viaturas) viaturas = parsed.viaturas;
+        if (parsed.manutencaoPreventiva) manutencaoPreventiva = parsed.manutencaoPreventiva;
+        if (parsed.ordensServico) ordensServico = parsed.ordensServico;
+        if (parsed.historicoManutencao) historicoManutencao = parsed.historicoManutencao;
+        if (parsed.kpis) kpis = parsed.kpis;
+        if (parsed.dadosGraficos) dadosGraficos = parsed.dadosGraficos;
+        return true;
+    } catch (e) {
+        console.warn('Erro ao ler localStorage:', e);
+        return false;
+    }
+}
+
+// Inicializa dados: tenta carregar do localStorage, se não existir mantém os dados embutidos
+(function(){
+    const loaded = loadAllData();
+    if (!loaded) saveAllData();
+})();
