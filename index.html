@@ -198,86 +198,69 @@
                 </li>
             </ul>
 
-            <!-- Preventiva Tab Content -->
-            <div class="tab-pane fade show active" id="preventiva" role="tabpanel">
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5>Plano de Manutenção Preventiva</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Viatura</th>
-                                        <th>Tipo</th>
-                                        <th>Frequência (km)</th>
-                                        <th>Próxima Execução</th>
-                                        <th>Status</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="corpoTabelaManutenção">
-                                    <!-- Populated by JS -->
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- Inner tabs content -->
+            <div class="tab-content">
+                <div id="preventiva" class="tab-pane fade show active">
+                    <h4>Manutenção Preventiva</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Item</th>
+                                    <th>Frequência</th>
+                                    <th>Última Execução</th>
+                                    <th>Próxima Execução</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaManutenção">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-
-            <!-- Ordens de Serviço Tab Content -->
-            <div class="tab-pane fade" id="os" role="tabpanel">
-                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalOS">
-                    <i class="fas fa-plus"></i> Nova Ordem de Serviço
-                </button>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Viatura</th>
-                                <th>Tipo</th>
-                                <th>Data</th>
-                                <th>Custo</th>
-                                <th>Status</th>
-                                <th>Tempo Parada</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpoTabelaOS">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Histórico Tab Content -->
-            <div class="tab-pane fade" id="historico" role="tabpanel">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Histórico de Manutenção por Viatura</h5>
+                <div id="os" class="tab-pane fade">
+                    <h4>Ordens de Serviço</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Viatura</th>
+                                    <th>Tipo</th>
+                                    <th>Data</th>
+                                    <th>Custo</th>
+                                    <th>Status</th>
+                                    <th>Tempo Parada</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaOS">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Viatura</th>
-                                        <th>Serviço</th>
-                                        <th>Data</th>
-                                        <th>Custo</th>
-                                        <th>Peças</th>
-                                        <th>Tempo Parada</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableHistorico">
-                                    <!-- Populated by JS -->
-                                </tbody>
-                            </table>
-                        </div>
+                </div>
+                <div id="historico" class="tab-pane fade">
+                    <h4>Histórico de Manutenção</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Viatura</th>
+                                    <th>Serviço</th>
+                                    <th>Data</th>
+                                    <th>Custo</th>
+                                    <th>Peças</th>
+                                    <th>Tempo Parada</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableHistorico">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -285,89 +268,71 @@
 
         <!-- Rastreamento Tab -->
         <div id="rastreamento" class="tab-content" style="display:none;">
-            <h1 class="mb-4"><i class="fas fa-map-location-dot"></i> Rastreamento em Tempo Real</h1>
-            <iframe src="rastreamento/rastreamento.html" style="width: 100%; height: 800px; border: none; border-radius: 8px;"></iframe>
+            <h1 class="mb-4"><i class="fas fa-map-marker-alt"></i> Rastreamento</h1>
+            <iframe src="rastreamento/rastreamento.html" style="width:100%;height:500px;border:0;"></iframe>
         </div>
 
         <!-- Relatórios Tab -->
         <div id="relatorios" class="tab-content" style="display:none;">
-            <h1 class="mb-4"><i class="fas fa-file-pdf"></i> Relatórios</h1>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Gerar Relatórios</h5>
+            <h1 class="mb-4"><i class="fas fa-file-export"></i> Relatórios</h1>
+            <div class="mb-3">
+                <button class="btn btn-success" onclick="gerarExcel()">Exportar CSV (Excel)</button>
+                <button class="btn btn-danger" onclick="gerarPDF()">Exportar PDF</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modals (Viatura / OS) -->
+    <!-- Modal Viatura -->
+    <div class="modal fade" id="modalViatura" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Viatura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formViatura">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Placa</label>
+                            <input name="placa" class="form-control" required>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="tipoRelatorio" class="form-label">Tipo de Relatório:</label>
-                                <select class="form-select" id="tipoRelatorio">
-                                    <option value="completo">Relatório Completo</option>
-                                    <option value="os">Ordens de Serviço</option>
-                                    <option value="preventiva">Manutenção Preventiva</option>
-                                    <option value="custos">Análise de Custos</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="dataInicio" class="form-label">Data Início:</label>
-                                <input type="date" class="form-control" id="dataInicio">
-                            </div>
-                            <div class="mb-3">
-                                <label for="dataFim" class="form-label">Data Fim:</label>
-                                <input type="date" class="form-control" id="dataFim">
-                            </div>
-                            <button class="btn btn-primary w-100 mb-2" onclick="gerarPDF()">
-                                <i class="fas fa-file-pdf"></i> Gerar PDF
-                            </button>
-                            <button class="btn btn-success w-100" onclick="gerarExcel()">
-                                <i class="fas fa-file-excel"></i> Gerar Excel
-                            </button>
+                        <div class="mb-3">
+                            <label class="form-label">Modelo</label>
+                            <input name="modelo" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ano</label>
+                            <input name="ano" class="form-control" type="number">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quilometragem</label>
+                            <input name="quilometragem" class="form-control" type="number">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unidade</label>
+                            <input name="unidade" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="operacao">Em Operação</option>
+                                <option value="manutencao">Em Manutenção</option>
+                                <option value="indisponivel">Indisponível</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>KPIs - Indicadores de Desempenho</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label>MTTR - Tempo Médio de Reparo</label>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p id="mttr-valor" class="text-primary"><strong>0 dias</strong></p>
-                                    <span id="mttr-variacao" class="kpi-variacao">0%</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label>MTBF - Tempo Médio Entre Falhas</label>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p id="mtbf-valor" class="text-primary"><strong>0 dias</strong></p>
-                                    <span id="mtbf-variacao" class="kpi-variacao">0%</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label>Disponibilidade</label>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p id="disponibilidade-valor" class="text-primary"><strong>0%</strong></p>
-                                    <span id="disponibilidade-variacao" class="kpi-variacao">0%</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label>Custo por Viatura</label>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p id="custo-viatura-valor" class="text-primary"><strong>R$ 0,00</strong></p>
-                                    <span id="custo-viatura-variacao" class="kpi-variacao">0%</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: EDITAR OS -->
+    <!-- Modal OS Editar (simplificado) -->
     <div class="modal fade" id="modalEditarOS" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -375,220 +340,54 @@
                     <h5 class="modal-title">Editar Ordem de Serviço</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="formEditarOS">
+                <form id="formEditarOS">
+                    <div class="modal-body">
                         <input type="hidden" id="edit-os-id">
-                        
                         <div class="mb-3">
                             <label class="form-label">Viatura</label>
-                            <input type="text" class="form-control" id="edit-viatura" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Manutenção</label>
-                            <select class="form-select" id="edit-tipo" required>
-                                <option value="Preventiva">Preventiva</option>
-                                <option value="Corretiva">Corretiva</option>
-                                <option value="Emergencial">Emergencial</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Data da Manutenção</label>
-                            <input type="date" class="form-control" id="edit-data" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Descrição do Problema</label>
-                            <textarea class="form-control" id="edit-descricao" rows="3"></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Custo (R$)</label>
-                            <input type="number" class="form-control" id="edit-custo" step="0.01" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" id="edit-status" required>
-                                <option value="Aberta">Aberta</option>
-                                <option value="Em Progresso">Em Progresso</option>
-                                <option value="Concluída">Concluída</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Tempo de Parada (dias)</label>
-                            <input type="number" class="form-control" id="edit-tempo-parada" step="0.5" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarOS').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: EDITAR MANUTENÇÃO PREVENTIVA -->
-    <div class="modal fade" id="modalEditarPreventiva" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Manutenção Preventiva</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formEditarPreventiva">
-                        <input type="hidden" id="edit-preventiva-id">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Viatura</label>
-                            <input type="text" class="form-control" id="edit-prev-viatura" disabled>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Manutenção</label>
-                            <input type="text" class="form-control" id="edit-prev-tipo" disabled>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Frequência (km)</label>
-                            <input type="number" class="form-control" id="edit-prev-frequencia" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Próxima Execução</label>
-                            <input type="date" class="form-control" id="edit-prev-proxima" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" id="edit-prev-status" required>
-                                <option value="Pendente">Pendente</option>
-                                <option value="Em Execução">Em Execução</option>
-                                <option value="Concluído">Concluído</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarPreventiva').dispatchEvent(new Event('submit'))">Salvar Alterações</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Nova Viatura -->
-    <div class="modal fade" id="modalViatura" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cadastro de Viatura</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formViatura">
-                        <div class="mb-3">
-                            <label class="form-label">Placa</label>
-                            <input type="text" class="form-control" name="placa" required>
+                            <input id="edit-viatura" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Modelo</label>
-                            <input type="text" class="form-control" name="modelo" required>
+                            <label class="form-label">Tipo</label>
+                            <input id="edit-tipo" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Ano</label>
-                            <input type="number" class="form-control" name="ano" required>
+                            <label class="form-label">Data</label>
+                            <input id="edit-data" type="date" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Quilometragem</label>
-                            <input type="number" class="form-control" name="quilometragem" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Unidade</label>
-                            <select class="form-select" name="unidade" required>
-                                <option value="1º Batalhão">1º Batalhão</option>
-                                <option value="2º Batalhão">2º Batalhão</option>
-                                <option value="3º Batalhão">3º Batalhão</option>
-                                <option value="Comando">Comando</option>
-                            </select>
+                            <label class="form-label">Custo</label>
+                            <input id="edit-custo" type="number" step="0.01" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" name="status" required>
-                                <option value="operacao">Em Operação</option>
-                                <option value="manutencao">Em Manutenção</option>
-                                <option value="indisponivel">Indisponível</option>
+                            <select id="edit-status" class="form-select">
+                                <option>aberta</option>
+                                <option>em_progresso</option>
+                                <option>finalizada</option>
                             </select>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="salvarViatura()">Salvar</button>
-                </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tempo Parada (h)</label>
+                            <input id="edit-tempo-parada" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal Nova OS -->
-    <div class="modal fade" id="modalOS" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nova Ordem de Serviço</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formOS">
-                        <div class="mb-3">
-                            <label class="form-label">Viatura</label>
-                            <select class="form-select" name="viatura" required>
-                                <option value="">Selecione...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Problema Identificado</label>
-                            <textarea class="form-control" name="problema" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Responsável</label>
-                            <input type="text" class="form-control" name="responsavel" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Peças Utilizadas</label>
-                            <textarea class="form-control" name="pecas" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Custo (R$)</label>
-                            <input type="number" class="form-control" name="custo" step="0.01" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="salvarOS()">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts Bootstrap -->
+    <!-- Scripts: Bootstrap bundle (includes Popper) then app scripts in correct order -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Scripts da Aplicação (Fases 1-4) -->
-    <script src="js/script-fase1.js"></script>
-    <script src="js/script-fase2.js"></script>
-    <script src="js/script-fase3.js"></script>
-    <script src="js/script-fase4.js"></script>
-    
-    <!-- Scripts Originais -->
     <script src="js/dados.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/viaturas.js"></script>
     <script src="js/manutencao.js"></script>
+    <script src="js/script-fase1.js"></script>
+    <script src="js/relatorios.js"></script>
 </body>
 </html>
