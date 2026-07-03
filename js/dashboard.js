@@ -106,29 +106,42 @@ function inicializarGraficos() {
     }
 }
 
-// Navegação entre abas (segura)
+// Navegação entre abas (robusta)
 function configurarNavegacao() {
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
     // Seleciona apenas as abas principais (filhas diretas de .container-fluid)
     const tabContents = document.querySelectorAll('.container-fluid > .tab-content');
 
-    if (!navLinks || !tabContents) return;
+    if (!navLinks || navLinks.length === 0 || !tabContents || tabContents.length === 0) return;
+
+    function showTab(id) {
+        tabContents.forEach(tab => {
+            tab.style.display = 'none';
+            tab.setAttribute('aria-hidden', 'true');
+        });
+        navLinks.forEach(l => l.classList.remove('active'));
+
+        const link = Array.from(navLinks).find(l => l.getAttribute('href')?.substring(1) === id);
+        if (link) link.classList.add('active');
+
+        const target = document.getElementById(id);
+        if (target) {
+            target.style.display = 'block';
+            target.setAttribute('aria-hidden', 'false');
+        }
+    }
 
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-
-            // Remover active de todos
-            navLinks.forEach(l => l.classList.remove('active'));
-            tabContents.forEach(tab => tab.style.display = 'none');
-
-            // Adicionar active ao clicado
-            this.classList.add('active');
             const tabId = this.getAttribute('href')?.substring(1);
-            if (tabId) {
-                const target = document.getElementById(tabId);
-                if (target) target.style.display = 'block';
-            }
+            if (!tabId) return;
+            showTab(tabId);
+            try { history.replaceState(null, '', '#' + tabId); } catch (err) { /* ignore */ }
         });
     });
+
+    // Inicializa aba visível: usa hash, ou link ativo, ou 'dashboard'
+    const initialId = (location.hash && location.hash.substring(1)) || (document.querySelector('.navbar-nav .nav-link.active')?.getAttribute('href')?.substring(1)) || 'dashboard';
+    showTab(initialId);
 }
