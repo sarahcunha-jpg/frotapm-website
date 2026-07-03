@@ -109,7 +109,8 @@ function inicializarGraficos() {
 // Navegação entre abas (segura)
 function configurarNavegacao() {
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-    const tabContents = document.querySelectorAll('.tab-content');
+    // Seleciona apenas as abas principais (filhas diretas de .container-fluid)
+    const tabContents = document.querySelectorAll('.container-fluid > .tab-content');
 
     if (!navLinks || !tabContents) return;
 
