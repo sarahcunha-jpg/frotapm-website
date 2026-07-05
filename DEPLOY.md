@@ -4,7 +4,7 @@ Este guia ajudará você a fazer deploy do FrotaPM em servidores gratuitos (Hero
 
 ---
 
-## ⚡ Opção 1: Deploy Rápido (Recomendado)
+## ⚡ Op ção 1: Deploy Rápido (Recomendado)
 
 ### Pré-requisitos
 - GitHub Account
@@ -150,50 +150,10 @@ Supabase:  https://seu-projeto.supabase.co
 ### Heroku não faz deploy
 - Verifique se o `Procfile` existe em `backend/Procfile`
 - Verifique se o `package.json` está correto
-- Veja os logs: `heroku logs --tail` (com CLI instalada)
 
 ---
 
-## 📱 Usar em Celular
-
-Agora você pode acessar do seu celular:
-```
-https://frotapm-website.vercel.app
-```
-
-Compartilhe o link com a equipe! 🎉
-
----
-
-## 🔄 Atualizar o Deploy
-
-Quando fizer mudanças:
-
-1. **No computador:**
-```bash
-git add .
-git commit -m "sua mensagem"
-git push origin complete-implementation
-```
-
-2. **Automático:**
-   - Heroku: redeploy automático
-   - Vercel: redeploy automático
-
-Mudanças aparecem em 2-3 minutos! ⚡
-
----
-
-## 💰 Custos
-
-✅ **Tudo GRÁTIS**
-- Heroku: free tier (com alguns limites)
-- Vercel: free tier (sem limites)
-- Supabase: free tier (com alguns limites)
-
----
-
-## 🎯 Próximas Melhorias
+## 💡 Próximas Melhorias
 
 - [ ] Adicionar SSL/TLS (automático em ambos)
 - [ ] Configurar domínio customizado
