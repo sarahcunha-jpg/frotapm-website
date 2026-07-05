@@ -1,15 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "frontend",
-      "use": "@vercel/static-build"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "frontend/index.html"
-    }
-  ]
+  "buildCommand": "echo 'Build complete'",
+  "outputDirectory": "frontend",
+  "framework": "other"
 }
