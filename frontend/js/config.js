@@ -1,5 +1,5 @@
-// Configuration
-const API_URL = process.env.API_URL || 'http://localhost:3000/api';
+// Configuration for FrotaPM
+const API_URL = 'https://frotapm-backend.herokuapp.com/api';
 
 const CONFIG = {
   apiUrl: API_URL,
