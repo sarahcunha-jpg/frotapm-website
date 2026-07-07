@@ -1,0 +1,12 @@
+{
+  "name": "frotapm-website",
+  "version": "1.0.0",
+  "description": "Frota PM website with health check endpoint",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
